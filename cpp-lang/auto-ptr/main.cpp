@@ -1,10 +1,12 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 using std::cout;
 using std::endl;
 using std::string;
+using std::unique_ptr;
 
 template<typename T>class auto_ptr {
 public:
@@ -21,7 +23,7 @@ public:
 		*m_ptr = *(copy.m_ptr);
 	}
 
-	auto_ptr(auto_ptr&& m): m_ptr(m.m_ptr) {
+	auto_ptr(auto_ptr&& m) noexcept : m_ptr(m.m_ptr) {
 		cout << "Move Constructor" << endl;
 		m.m_ptr = nullptr;
 	}
@@ -35,7 +37,7 @@ public:
 		return *this;
 	}
 
-	T& operator=(auto_ptr&& m)  {
+	T& operator=(auto_ptr&& m) noexcept {
 		cout << "Move Assignment" << endl;
 		if (&m == this)
 			return *this;
@@ -52,20 +54,35 @@ private:
 
 };
 
+class A {
+public:
+	A() { cout << "A Constructor" << endl; }
+	~A() { cout << "A Destructor" << endl; }
+	friend std::ostream& operator<<(std::ostream& os, const A& a) { return os << "AAHAHAH..."; }
+};
+
+void uniqueCall(std::unique_ptr<A>& ptr) {
+	if(ptr)
+		cout << *ptr << endl;
+}
+
 int main () {
 
 	auto_ptr<string> autoptr( new string{"autoptr"} );
-
 	auto_ptr autocopy(autoptr);
 	auto_ptr autocopyass = autoptr;
 
-	std::cout << *autocopy << std::endl;
-	std::cout << *autocopyass << std::endl;
+	cout << *autoptr << endl;
+	cout << *autocopy << endl;
+	cout << *autocopyass << endl;
 
 	auto_ptr<string> autocopymove(std::move(autoptr));
-
-	std::cout << *autocopymove << std::endl;
+	cout << *autocopymove << endl;
 	
+	unique_ptr<A> pa { std::make_unique<A>() };
+	uniqueCall( pa );
+
+
 
 	return 0;
 }

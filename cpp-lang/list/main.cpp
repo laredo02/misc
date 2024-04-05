@@ -46,7 +46,7 @@ public:
 		return *this;
 	}
 
-	List& operator=(List&& list) {
+	List& operator=(List&& list) noexcept {
 		cout << this << "\tList::operator=(List&& list)" << endl;
 		if(&list == nullptr)
 			return *this;
