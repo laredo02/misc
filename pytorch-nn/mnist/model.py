@@ -1,47 +1,67 @@
 
-
 import torch
-import torch.nn as nn
-import torch.optim as optim
+from torch import nn
 from torchvision import datasets, transforms
+from torchvision.transforms import v2
 from torch.utils.data import DataLoader
-
-class MNISTModel(nn.Module):
-    def __init__(self):
-        super(MNISTModel, self).__init__()
-        self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(28*28, 128)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, 10)
-
-    def forward(self, x):
-        x = self.flatten(x)
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
-        x = self.relu()
-        x = self.fc3(x)
-        return x
-
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
-
-train_dataset = datasets.MNIST(root="./data", train=True,  download=True, transform=transform)
-test_dataset  = datasets.MNIST(root="./data", train=False, download=True, transform=transform)
+import matplotlib.pyplot as plt
 
 batch_size = 64
+num_classes = 10
 
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-test_loader  = DataLoader(test_dataset,  batch_size=batch_size, shuffle=True)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model = MNISTModel()
+transforms = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081)),
+    transforms.RandomRotation(degrees=5),
+    transforms.RandomAffine(degrees=0, translate=(.1, .1))
+])
 
-if torch.cuda.is_available():
-    model = model.cuda()
-    print("model = model.cuda()")
+train_data = datasets.MNIST(root="~/.pytorch/mnist", train=True,  download=True, transform=transforms)
+print(f"Size of training dataset: {len(train_data)}")
+train_loader = DataLoader(dataset=train_data, batch_size=batch_size, shuffle=True)
 
-loss = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters())
+test_data  = datasets.MNIST(root="~/.pytorch/mnist", train=False, download=True, transform=transforms)
+print(f"Size of test dataset: {len(test_data)}")
+train_loader = DataLoader(dataset=test_data, batch_size=batch_size, shuffle=True)
+
+fig, axes = plt.subplots(3, 3, figsize=(9, 9))
+axes = axes.flatten()
+for i in range(9):
+    image, label = train_data[i]
+    image = image.squeeze().numpy()
+
+    axes[i].imshow(image, cmap='gray')
+    axes[i].set_title(f'Label: {label}')
+    axes[i].axis('on')
+
+plt.tight_layout()
+plt.show()
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1   = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=2)
+        self.relu    = nn.ReLU()
+        self.pool1   = nn.MaxPool2d(kernel_size=(2, 2));
+        self.flatten = nn.Flatten()
+        self.fc1     = nn.Linear(16*14*14, num_classes);
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.relu(x)
+        x = self.pool1(x)
+        x = self.fc1(x)
+        return x
+
+def train_model(dataloader, model, loss_fn, optim):
+    model.train()
+    
+model = Model().to(device)
+
+
+
 
 
 
