@@ -1,10 +1,4 @@
 
-#ifndef IMAGE_H
-#define IMAGE_H
-
-#include "RayNet.h"
-#include "XYZ.h"
-
 struct Color {
 	double r, g, b, a;
 }
@@ -15,20 +9,20 @@ public:
 	RGBImage(size_t h, size_t w);
 	RGBImage(RGBImage& image);
 
+	size_t height() const;
+	size_t width() const;
+
 	void resize(size_t h, size_t w);
 	void fill(Color color);
 	void randFill();
 
-	void setPixel(size_t y, size_t x, struct color);
+	void setPixel(size_t y, size_t x, struct Color);
 	const Color& getPixel(size_t y, size_t x) const;
-
-	size_t height() const;
-	size_t width() const;
 
 	void saveToFile(const std::string& path) const;
 
 private:
-	std::unique_ptr<std::vector<std::vector<Color>>> data;
+	std::unique_ptr<std::vector<std::vector<struct Color>>> data;
 
 	size_t m_Height;
 	size_t m_Width;
@@ -98,6 +92,4 @@ std::ostream& operator<<(std::ostream& os, const RGBImage& image) {
 	}
 	return os;
 }
-
-#endif /* IMAGE_H */
 
