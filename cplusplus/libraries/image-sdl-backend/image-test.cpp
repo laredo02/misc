@@ -30,6 +30,12 @@ int main () {
 	}
 	image6.saveToFile("images/image6.ppm");
 
+	Image image7{ 300, 500 };
+	image7.randFill();
+	image7.saveToFile("images/image7.ppm");
+
+
+
 	return 0;
 }
 

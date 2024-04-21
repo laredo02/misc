@@ -8,18 +8,26 @@ class Animal {
 protected:
 	Animal() { cout << "Animal::Animal()"; }
 public:
-	virtual void print() { cout << "Animal" << endl; }
+	virtual void print() = 0;
+		//{ cout << "Animal" << endl; }
+	virtual ~Animal() {
+		//cout << "Animal::~Animal()" << endl;
+	}
 };
 
 class Cat: public Animal {
 public:
 	Cat() { cout << "Cat::Cat()" << endl; }
+	~Cat() { cout << "Cat::~Cat()" << endl; }
+
 	void print() { cout << "Cat" << endl; }
 };
 
 class Dog: public Animal {
 public:
 	Dog() { cout << "Dog::Dog()" << endl; }
+	~Dog() { cout << "Dog::~Dog()" << endl; }
+
 	void print() { cout << "Dog" << endl; }
 };
 

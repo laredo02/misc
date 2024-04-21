@@ -4,6 +4,8 @@
 #include <random>
 #include <cassert>
 
+#include <SDL2/SDL.h>
+
 #define ASSERTIONS 1
 #define BOUNDS_CHECKING 1
 #define ECHO_CONSTRUCTION 1
@@ -40,7 +42,7 @@ public:
 
 private:
 
-	Color* m_Data;
+	Uint32* m_Data;
 
 	size_t m_Height;
 	size_t m_Width;
