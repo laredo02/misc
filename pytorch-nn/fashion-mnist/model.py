@@ -23,6 +23,8 @@ class NeuralNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(512, 512),
             nn.ReLU(),
+            nn.Linear(512, 512),
+            nn.ReLU(),
             nn.Linear(512, 10),
         )
     def forward(self, x):
@@ -34,6 +36,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
+        X, y = X.to(device), y.to(device)
         pred = model(X)
         loss = loss_fn(pred, y)
 
@@ -53,6 +56,7 @@ def test_loop(dataloader, model, loss_fn):
 
     with torch.no_grad():
         for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
@@ -63,10 +67,10 @@ def test_loop(dataloader, model, loss_fn):
 
 
 batch_size = 32
-learning_rate = 2e-3
+learning_rate = 0.003
 epochs = 10
 
-model = NeuralNetwork()
+model = NeuralNetwork().to(device)
 
 training_data = datasets.FashionMNIST( root="~/.pytorch/fashion-mnist", train=True, download=True, transform=ToTensor() )
 test_data = datasets.FashionMNIST( root="~/.pytorch/fashion-mnist", train=False, download=True, transform=ToTensor() )
