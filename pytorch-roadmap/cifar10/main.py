@@ -103,23 +103,20 @@ def test_model(dataloader, model, criterion, device):
         print(f"acc = {acc}")
         print(f"avg_loss = {average_loss}")
 
+def main(device):
+    model = Model().to(device)
+    train_loader, test_loader = getDataLoaders(64);
+
+    criterion = torch.nn.CrossEntropyLoss()
+
+
+    optim = torch.optim.Adam(model.parameters(), 0.001)
+    train_model(train_loader, model, criterion, optim, device, 12)
+    test_model(test_loader, model, criterion, device)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device)
-
-model = Model().to(device)
-train_loader, test_loader = getDataLoaders(64);
-
-criterion = torch.nn.CrossEntropyLoss()
-
-
-
-
-optim = torch.optim.Adam(model.parameters(), 0.001)
-train_model(train_loader, model, criterion, optim, device, 12)
-test_model(test_loader, model, criterion, device)
-
-
+main(device)
 
 
 
