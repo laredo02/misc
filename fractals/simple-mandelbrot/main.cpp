@@ -1,10 +1,16 @@
 
 #include <iostream>
-#include <vector>
+#include <cassert>
+#include <array>
 #include <complex>
 
+#include "Image.hpp"
+
+using std::cout;
 using std::complex;
-using std::vector;
+using std::array;
+
+std::array<char, 10> charlist { '@', '#', '%', '*', '+', ';', ':', ',', '.', ' ' };
 
 int mandelbrot(complex<double> c, int max_iter) {
 	complex<double> z { 0.0, 0.0 };
@@ -16,14 +22,32 @@ int mandelbrot(complex<double> c, int max_iter) {
 	return max_iter;
 }
 
+int map_interval(const int min_in, const int max_in, const int min_out, const int max_out, const int value) {
+	double factor = value/(double)(max_in-min_in);
+	return (int) min_out+(max_out-min_out)*factor;
+}
+
 int main () {
 
-	std::vector<int> = ;
+	const auto step = 0.01;
 
-	std::cout << mandelbrot({0.0, 1.0}, 1000) << std::endl;
+	const auto xi = -2.0;
+	const auto xf = 2.0;
+
+	const auto yi = 2.0;
+	const auto yf = -2.0;
+
+	const auto depth = 9;
+
+
+	for (double y=yi; y>=yf; y-=step) {
+		for (double x=xi; x<=xf; x+=step) {
+			int m = mandelbrot(complex(x, y), depth);
+			cout << charlist[m] << ' ';
+		}
+		cout << '\n';
+	}
 
 	return 0;
 }
-
-
 
