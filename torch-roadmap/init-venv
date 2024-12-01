@@ -1,0 +1,2 @@
+echo "Python3 venv"
+source torch-venv/bin/activate

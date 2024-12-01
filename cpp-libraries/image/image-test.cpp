@@ -21,13 +21,14 @@ int main () {
 	image5 = std::move(image1);
 	image5.saveToFile("images/image5.ppm");
 
-	size_t h = 100, w = 200;
+	size_t h = 10, w = 10;
 	Image image6 { h, w };
 	for (int i=0; i<h; i++) {
 		for (int j=0; j<w; j++) {
 			image6.setPixel(i, j, Color{0.5, 0.5, 0.5, 1.0});
 		}
 	}
+  image6.setPixel(0, 0, Color{1.0, 1.0, 0.0});
 	image6.saveToFile("images/image6.ppm");
 
 	return 0;

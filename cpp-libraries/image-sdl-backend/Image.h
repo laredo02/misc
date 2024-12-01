@@ -17,9 +17,7 @@ struct Color {
 };
 
 class Image {
-
 public:
-
 	Image();
 	Image(size_t h, size_t w);
 	Image(const Image& image);
